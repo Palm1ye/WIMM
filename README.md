@@ -10,6 +10,7 @@ Where Is My Money? is a mobile application designed to help users track their ex
 - **Delete Functionality:** Remove expense entries from the history.
 - **Multi-Currency Support:** Allows users to select their preferred currency for expense tracking.
 - **Localization:** Supports multiple languages for a personalized user experience.
+- _It also supports **Push Notifications** but you need to have a Developer account to use that feature. (Not because of me, because of Apple & Google)_
 
 ## Technologies Used
 
