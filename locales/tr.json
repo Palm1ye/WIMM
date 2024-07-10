@@ -1,0 +1,15 @@
+{
+    "title": "Sen bu parayı naptın?",
+    "amountPlaceholder": "Fiyat",
+    "descriptionPlaceholder": "Açıklama",
+    "addExpenseButton": "Harcama Ekle",
+    "settingsButton": "Ayarlar",
+    "deleteButton": "Sil",
+    "currencyOptionUSD": "Dolar ($)",
+    "currencyOptionTRY": "Türk Lirası (₺)",
+    "closeButton": "Kapat",
+    "locationNotificationTitle": "Vardınız!",
+    "locationNotificationBody": "{{placeName}} konumundasınız, ne kadar harcadınız?",
+    "languageOptionEN": "English",
+    "languageOptionTR": "Türkçe"
+  }
