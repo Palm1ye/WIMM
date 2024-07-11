@@ -37,11 +37,11 @@ export const addExpense = async (amount: number, description: string) => {
 };
 
 // Girilen giderleri getirme fonksiyonu
-export const getExpenses = async (): Promise<{ id: number; amount: number; description: string }[]> => {
+export const getExpenses = async (): Promise<{ id: number; amount: number; description: string; category: string }[]> => {
   try {
     const statement = await (await db).prepareAsync('SELECT * FROM expenses');
     const result = await statement.executeAsync();
-    const expenses = await result.getAllAsync() as { id: number; amount: number; description: string }[];
+    const expenses = await result.getAllAsync() as { id: number; amount: number; description: string; category: string }[];
     await statement.finalizeAsync();
     return expenses;
   } catch (error) {

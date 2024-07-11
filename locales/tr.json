@@ -11,5 +11,9 @@
     "locationNotificationTitle": "Vardınız!",
     "locationNotificationBody": "{{placeName}} konumundasınız, ne kadar harcadınız?",
     "languageOptionEN": "English",
-    "languageOptionTR": "Türkçe"
+    "languageOptionTR": "Türkçe",
+    "errorTitleEmpty": "Hata",
+    "errorBodyEmpty": "Lütfen her iki alanı da doldurun.",
+    "yourLocation": "Buradasınız",
+    "locationPermissionDenied": "Konum erişimi izni reddedildi"
   }

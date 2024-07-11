@@ -6,6 +6,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { createTables, addExpense, getExpenses, deleteExpense } from '../database';
 import i18next from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 
 // Dil dosyalarını yükleyin
 import en from '../locales/en.json';
@@ -27,7 +28,7 @@ i18next.use(initReactI18next).init({
 
 export default function App() {
   const { t, i18n } = useTranslation();
-  
+
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [expenses, setExpenses] = useState<{ id: number; amount: number; description: string }[]>([]);
@@ -54,7 +55,7 @@ export default function App() {
       setDescription('');
       loadExpenses();
     } else {
-      Alert.alert('Error', 'Please fill in both fields');
+      Alert.alert(t('errorTitleEmpty'), t('errorBodyEmpty'));
     }
   };
 
@@ -66,7 +67,7 @@ export default function App() {
   const requestLocationPermission = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission to access location was denied');
+      Alert.alert(t('locationPermissionDenied'));
       return;
     }
 
@@ -99,7 +100,7 @@ export default function App() {
       }
     );
   };
- // Bu fonksiyon yakındaki yerleri kontrol eder ve bildirim gönderir (denenmedi)
+// Bu fonksiyon yakındaki yerleri kontrol eder ve bildirim gönderir (denenmedi)
   const checkNearbyPlaces = (location: Location.LocationObject) => {
     const places = [
       { id: 1, name: 'Restaurant A', latitude: 37.7749, longitude: -122.4194 },
@@ -206,7 +207,7 @@ export default function App() {
         onChangeText={setDescription}
       />
       <TouchableOpacity style={styles.settingsButton} onPress={openSettingsMenu}>
-        <Text style={styles.settingsButtonText}>{t('settingsButton')}</Text>
+        <Ionicons name="settings-outline" size={24} color="#007BFF" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleAddExpense}>
         <Text style={styles.buttonText}>{t('addExpenseButton')}</Text>
@@ -218,7 +219,7 @@ export default function App() {
           <View style={styles.expenseItem}>
             <Text style={styles.expenseText}>{item.description}: {item.amount} {currency}</Text>
             <TouchableOpacity onPress={() => handleDeleteExpense(item.id)}>
-              <Text style={styles.deleteText}>{t('deleteButton')}</Text>
+              <Ionicons name="trash-outline" size={24} color="#FF6347" />
             </TouchableOpacity>
           </View>
         )}
@@ -239,7 +240,7 @@ export default function App() {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             }}
-            title={"Your Location"}
+            title={t('yourLocation')}
           />
         </MapView>
       )}
@@ -278,64 +279,60 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonText: {
-    color: '#333',
+    color: '#fff',
     fontSize: 16,
-    },
-    settingsButton: {
-      position: 'absolute',
-      top: 20,
-      right: 20,
-    },
-    settingsButtonText: {
-      color: '#007BFF',
-      fontSize: 16,
-    },
+  },
+  settingsButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+  },
   expenseItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-alignItems: 'center',
-padding: 10,
-marginVertical: 8,
-borderWidth: 1,
-borderColor: '#ddd',
-backgroundColor: '#fff',
-borderRadius: 5,
-},
-expenseText: {
-fontSize: 16,
-},
-deleteText: {
-color: '#FF6347',
-},
-map: {
-width: '100%',
-height: 200,
-marginTop: 20,
-},
-modalContainer: {
-flex: 1,
-justifyContent: 'center',
-alignItems: 'center',
-backgroundColor: 'rgba(0, 0, 0, 0.5)',
-},
-modalContent: {
-backgroundColor: '#fff',
-padding: 20,
-borderRadius: 10,
-width: '80%',
-alignItems: 'center',
-},
-currencyOption: {
-fontSize: 18,
-marginVertical: 10,
-},
-languageOption: {
-fontSize: 18,
-marginVertical: 10,
-},
-closeText: {
-fontSize: 18,
-color: 'red',
-marginTop: 20,
-},
+    alignItems: 'center',
+    padding: 10,
+    marginVertical: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+  },
+  expenseText: {
+    fontSize: 16,
+  },
+  deleteText: {
+    color: '#FF6347',
+  },
+  map: {
+    width: '100%',
+    height: 200,
+    marginTop: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  currencyOption: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  languageOption: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  closeText: {
+    fontSize: 18,
+    color: 'red',
+    marginTop: 20,
+  },
 });

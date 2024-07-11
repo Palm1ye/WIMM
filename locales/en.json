@@ -1,15 +1,19 @@
 {
-    "title": "Where Is My Money?",
-    "amountPlaceholder": "Price",
-    "descriptionPlaceholder": "Description",
-    "addExpenseButton": "Add Expense",
-    "settingsButton": "Settings",
-    "deleteButton": "Delete",
-    "currencyOptionUSD": "Dollar ($)",
-    "currencyOptionTRY": "Türk Lirası (₺)",
-    "closeButton": "Close",
-    "locationNotificationTitle": "You have arrived",
-    "locationNotificationBody": "You are at {{placeName}}, how much did you spend?",
-    "languageOptionEN": "English",
-    "languageOptionTR": "Türkçe"
-  }
+  "title": "Where Is My Money?",
+  "amountPlaceholder": "Price",
+  "descriptionPlaceholder": "Description",
+  "addExpenseButton": "Add Expense",
+  "settingsButton": "Settings",
+  "deleteButton": "Delete",
+  "currencyOptionUSD": "Dollar ($)",
+  "currencyOptionTRY": "Türk Lirası (₺)",
+  "closeButton": "Close",
+  "locationNotificationTitle": "You have arrived",
+  "locationNotificationBody": "You are at {{placeName}}, how much did you spend?",
+  "languageOptionEN": "English",
+  "languageOptionTR": "Türkçe",
+  "errorTitleEmpty": "Error",
+  "errorBodyEmpty": "Please fill both fields.",
+  "yourLocation": "You are here",
+  "locationPermissionDenied": "Location access permission denied"
+}
