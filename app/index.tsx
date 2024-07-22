@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Alert, Platform, Modal } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Alert, Platform, Modal, Switch } from 'react-native';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import MapView, { Marker } from 'react-native-maps';
@@ -7,6 +7,7 @@ import { createTables, addExpense, getExpenses, deleteExpense } from '../databas
 import i18next from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { DefaultTheme, DarkTheme, ThemeProvider, useTheme } from '@react-navigation/native';
 
 // Dil dosyalarını yükleyin
 import en from '../locales/en.json';
@@ -26,7 +27,7 @@ i18next.use(initReactI18next).init({
   },
 });
 
-export default function App() {
+const App = () => {
   const { t, i18n } = useTranslation();
 
   const [amount, setAmount] = useState('');
@@ -35,6 +36,10 @@ export default function App() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [currency, setCurrency] = useState('$'); // Varsayılan para birimi
+  const [total, setTotal] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const theme = isDarkMode ? DarkTheme : DefaultTheme;
 
   useEffect(() => {
     createTables();
@@ -46,6 +51,12 @@ export default function App() {
   const loadExpenses = async () => {
     const data = await getExpenses();
     setExpenses(data);
+    calculateTotal(data);
+  };
+
+  const calculateTotal = (data: any[]) => {
+    const total = data.reduce((sum, expense) => sum + expense.amount, 0);
+    setTotal(total);
   };
 
   const handleAddExpense = () => {
@@ -100,7 +111,7 @@ export default function App() {
       }
     );
   };
-// Bu fonksiyon yakındaki yerleri kontrol eder ve bildirim gönderir (denenmedi)
+
   const checkNearbyPlaces = (location: Location.LocationObject) => {
     const places = [
       { id: 1, name: 'Restaurant A', latitude: 37.7749, longitude: -122.4194 },
@@ -161,9 +172,13 @@ export default function App() {
     closeSettingsMenu();
   };
 
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   const renderSettingsMenu = () => (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={showSettings}
       onRequestClose={closeSettingsMenu}
@@ -182,6 +197,13 @@ export default function App() {
           <TouchableOpacity onPress={() => changeLanguage('tr')}>
             <Text style={styles.languageOption}>{t('languageOptionTR')}</Text>
           </TouchableOpacity>
+          <View style={styles.darkModeToggle}>
+            <Text style={styles.darkModeText}>{t('darkMode')}</Text>
+            <Switch
+              value={isDarkMode}
+              onValueChange={toggleDarkMode}
+            />
+          </View>
           <TouchableOpacity onPress={closeSettingsMenu}>
             <Text style={styles.closeText}>{t('closeButton')}</Text>
           </TouchableOpacity>
@@ -191,123 +213,116 @@ export default function App() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t('title')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('amountPlaceholder')}
-        keyboardType="numeric"
-        value={amount}
-        onChangeText={setAmount}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder={t('descriptionPlaceholder')}
-        value={description}
-        onChangeText={setDescription}
-      />
-      <TouchableOpacity style={styles.settingsButton} onPress={openSettingsMenu}>
-        <Ionicons name="settings-outline" size={24} color="#007BFF" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleAddExpense}>
-        <Text style={styles.buttonText}>{t('addExpenseButton')}</Text>
-      </TouchableOpacity>
-      <FlatList
-        data={expenses}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.expenseItem}>
-            <Text style={styles.expenseText}>{item.description}: {item.amount} {currency}</Text>
-            <TouchableOpacity onPress={() => handleDeleteExpense(item.id)}>
-              <Ionicons name="trash-outline" size={24} color="#FF6347" />
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-      {renderSettingsMenu()}
-      {location && (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0025,
-            longitudeDelta: 0.0025,
-          }}
-        >
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            title={t('yourLocation')}
+      <ThemeProvider value={theme}>
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+          <Text style={[styles.title, { color: theme.colors.text }]}>{t('title')}</Text>
+          <TextInput
+            style={[styles.input, { borderColor: theme.colors.border, color: theme.colors.text }]}
+            placeholder={t('amountPlaceholder')}
+            placeholderTextColor={theme.colors.border}
+            keyboardType="numeric"
+            value={amount}
+            onChangeText={setAmount}
           />
-        </MapView>
-      )}
-    </View>
+          <TextInput
+            style={[styles.input, { borderColor: theme.colors.border, color: theme.colors.text }]}
+            placeholder={t('descriptionPlaceholder')}
+            placeholderTextColor={theme.colors.border}
+            value={description}
+            onChangeText={setDescription}
+          />
+          <TouchableOpacity style={styles.settingsButton} onPress={openSettingsMenu}>
+            <Ionicons name="settings-outline" size={24} color={theme.colors.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={handleAddExpense}>
+            <Text style={[styles.buttonText, { color: theme.colors.card }]}>{t('addButton')}</Text>
+          </TouchableOpacity>
+          <Text style={[styles.total, { color: theme.colors.text }]}>{t('total')}: {total} {currency}</Text>
+          <FlatList
+            data={expenses}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={[styles.expenseItem, { borderColor: theme.colors.border }]}>
+                <Text style={[styles.expenseText, { color: theme.colors.text }]}>{item.description} - {item.amount} {currency}</Text>
+                <TouchableOpacity onPress={() => handleDeleteExpense(item.id)}>
+                  <Ionicons name="trash-outline" size={24} color={theme.colors.notification} />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+          {location && (
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+            >
+              <Marker
+                coordinate={{
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                }}
+                title={t('currentLocation')}
+              />
+            </MapView>
+          )}
+          {renderSettingsMenu()}
+        </View>
+      </ThemeProvider>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    backgroundColor: '#f5f5f5',
+    padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333',
+    marginBottom: 16,
   },
   input: {
-    height: 40,
-    borderColor: '#ddd',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 8,
-    backgroundColor: '#fff',
-    borderRadius: 5,
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 8,
   },
   button: {
-    backgroundColor: '#007BFF',
-    padding: 10,
+    padding: 16,
+    borderRadius: 4,
     alignItems: 'center',
-    borderRadius: 5,
-    marginBottom: 20,
   },
   buttonText: {
-    color: '#fff',
     fontSize: 16,
-  },
-  settingsButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
+    fontWeight: 'bold',
   },
   expenseItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    marginVertical: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
-    borderRadius: 5,
+    padding: 8,
+    borderBottomWidth: 1,
   },
   expenseText: {
     fontSize: 16,
   },
-  deleteText: {
-    color: '#FF6347',
-  },
   map: {
-    width: '100%',
     height: 200,
-    marginTop: 20,
+    marginTop: 16,
+  },
+  total: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 16,
+  },
+  settingsButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
   },
   modalContainer: {
     flex: 1,
@@ -316,23 +331,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
+    width: 300,
+    padding: 16,
+    backgroundColor: 'white',
+    borderRadius: 8,
     alignItems: 'center',
   },
   currencyOption: {
     fontSize: 18,
-    marginVertical: 10,
+    padding: 8,
   },
   languageOption: {
     fontSize: 18,
-    marginVertical: 10,
+    padding: 8,
+  },
+  darkModeToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 8,
+  },
+  darkModeText: {
+    fontSize: 18,
+    marginRight: 8,
   },
   closeText: {
     fontSize: 18,
-    color: 'red',
-    marginTop: 20,
+    padding: 8,
+    color: 'blue',
   },
 });
+
+export default App;

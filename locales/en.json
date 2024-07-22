@@ -1,4 +1,5 @@
 {
+  "addButton": "Add",
   "title": "Where Is My Money?",
   "amountPlaceholder": "Price",
   "descriptionPlaceholder": "Description",
@@ -15,5 +16,7 @@
   "errorTitleEmpty": "Error",
   "errorBodyEmpty": "Please fill both fields.",
   "yourLocation": "You are here",
-  "locationPermissionDenied": "Location access permission denied"
+  "locationPermissionDenied": "Location access permission denied",
+  "darkMode": "Dark Mode",
+  "total": "Total"
 }

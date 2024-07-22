@@ -1,4 +1,5 @@
 {
+    "addButton": "Ekle",
     "title": "Sen bu parayı naptın?",
     "amountPlaceholder": "Fiyat",
     "descriptionPlaceholder": "Açıklama",
@@ -15,5 +16,7 @@
     "errorTitleEmpty": "Hata",
     "errorBodyEmpty": "Lütfen her iki alanı da doldurun.",
     "yourLocation": "Buradasınız",
-    "locationPermissionDenied": "Konum erişimi izni reddedildi"
+    "locationPermissionDenied": "Konum erişimi izni reddedildi",
+    "darkMode": "Karanlık Mod",
+    "total": "Toplam"
   }
