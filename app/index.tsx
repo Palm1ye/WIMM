@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Alert, Platform, Modal, Switch } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Alert, Platform, Modal, Switch, Button } from 'react-native';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import MapView, { Marker } from 'react-native-maps';
@@ -8,20 +8,22 @@ import i18next from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { DefaultTheme, DarkTheme, ThemeProvider, useTheme } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import * as Haptics from 'expo-haptics';
 
-// Dil dosyalarını yükleyin
+// Import translations
 import en from '../locales/en.json';
 import tr from '../locales/tr.json';
 
-// Dil konfigürasyonunu başlatın
+// Use the i18next library to manage translations
 i18next.use(initReactI18next).init({
-  compatibilityJSON: 'v3', // bu neden var bilmiyorum, stackoverflow'da buldum
+  compatibilityJSON: 'v3', // i don't know what this is but it's required
   resources: {
     en: { translation: en },
     tr: { translation: tr },
   },
-  lng: 'en', // Başlangıçta kullanılacak dil
-  fallbackLng: 'en', // Dil bulunamadığında kullanılacak dil
+  lng: 'en', // Define the default language
+  fallbackLng: 'en', // Define a fallback language
   interpolation: {
     escapeValue: false,
   },
@@ -35,7 +37,7 @@ const App = () => {
   const [expenses, setExpenses] = useState<{ id: number; amount: number; description: string }[]>([]);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [currency, setCurrency] = useState('$'); // Varsayılan para birimi
+  const [currency, setCurrency] = useState('$'); // Default currency
   const [total, setTotal] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -112,6 +114,11 @@ const App = () => {
     );
   };
 
+  setTimeout(async () => {
+    const currentPosition = await Location.getCurrentPositionAsync({});
+    console.log(currentPosition.coords);
+  }, 300);  // its logging the current position every 300ms (for checking nearby places)
+
   const checkNearbyPlaces = (location: Location.LocationObject) => {
     const places = [
       { id: 1, name: 'Restaurant A', latitude: 37.7749, longitude: -122.4194 },
@@ -141,7 +148,7 @@ const App = () => {
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c * 1000; // metre
+    return R * c * 1000; // meters
   };
 
   const sendNotification = async (placeName: string) => {
@@ -152,7 +159,20 @@ const App = () => {
       },
       trigger: null,
     });
+
+    // In app notification test
+    Toast.show({
+      type: 'success',
+      text1: t('locationNotificationTitle'),
+      text2: t('locationNotificationBody', { placeName }),
+      position: 'top', // or 'bottom'
+    });
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);  // For the vibration
   };
+
+
+
+  
 
   const openSettingsMenu = () => {
     setShowSettings(true);
@@ -213,65 +233,66 @@ const App = () => {
   );
 
   return (
-      <ThemeProvider value={theme}>
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-          <Text style={[styles.title, { color: theme.colors.text }]}>{t('title')}</Text>
-          <TextInput
-            style={[styles.input, { borderColor: theme.colors.border, color: theme.colors.text }]}
-            placeholder={t('amountPlaceholder')}
-            placeholderTextColor={theme.colors.border}
-            keyboardType="numeric"
-            value={amount}
-            onChangeText={setAmount}
-          />
-          <TextInput
-            style={[styles.input, { borderColor: theme.colors.border, color: theme.colors.text }]}
-            placeholder={t('descriptionPlaceholder')}
-            placeholderTextColor={theme.colors.border}
-            value={description}
-            onChangeText={setDescription}
-          />
-          <TouchableOpacity style={styles.settingsButton} onPress={openSettingsMenu}>
-            <Ionicons name="settings-outline" size={24} color={theme.colors.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={handleAddExpense}>
-            <Text style={[styles.buttonText, { color: theme.colors.card }]}>{t('addButton')}</Text>
-          </TouchableOpacity>
-          <Text style={[styles.total, { color: theme.colors.text }]}>{t('total')}: {total} {currency}</Text>
-          <FlatList
-            data={expenses}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={[styles.expenseItem, { borderColor: theme.colors.border }]}>
-                <Text style={[styles.expenseText, { color: theme.colors.text }]}>{item.description} - {item.amount} {currency}</Text>
-                <TouchableOpacity onPress={() => handleDeleteExpense(item.id)}>
-                  <Ionicons name="trash-outline" size={24} color={theme.colors.notification} />
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-          {location && (
-            <MapView
-              style={styles.map}
-              initialRegion={{
+    <ThemeProvider value={theme}>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <Text style={[styles.title, { color: theme.colors.text }]}>{t('title')}</Text>
+        <TextInput
+          style={[styles.input, { borderColor: theme.colors.border, color: theme.colors.text }]}
+          placeholder={t('amountPlaceholder')}
+          placeholderTextColor={theme.colors.border}
+          keyboardType="numeric"
+          value={amount}
+          onChangeText={setAmount}
+        />
+        <TextInput
+          style={[styles.input, { borderColor: theme.colors.border, color: theme.colors.text }]}
+          placeholder={t('descriptionPlaceholder')}
+          placeholderTextColor={theme.colors.border}
+          value={description}
+          onChangeText={setDescription}
+        />
+        <TouchableOpacity style={styles.settingsButton} onPress={openSettingsMenu}>
+          <Ionicons name="settings-outline" size={24} color={theme.colors.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={handleAddExpense}>  
+          <Text style={[styles.buttonText, { color: theme.colors.card }]}>{t('addButton')}</Text>
+        </TouchableOpacity> 
+        <Text style={[styles.total, { color: theme.colors.text }]}>{t('total')}: {total} {currency}</Text>
+        <FlatList
+          data={expenses}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={[styles.expenseItem, { borderColor: theme.colors.border }]}>
+              <Text style={[styles.expenseText, { color: theme.colors.text }]}>{item.description} - {item.amount} {currency}</Text>
+              <TouchableOpacity onPress={() => handleDeleteExpense(item.id)}>
+                <Ionicons name="trash-outline" size={24} color={theme.colors.notification} />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+        {location && (
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          >
+            <Marker
+              coordinate={{
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
               }}
-            >
-              <Marker
-                coordinate={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                }}
-                title={t('currentLocation')}
-              />
-            </MapView>
-          )}
-          {renderSettingsMenu()}
-        </View>
-      </ThemeProvider>
+              title={t('currentLocation')}
+            />
+          </MapView>
+        )}
+        {renderSettingsMenu()}
+        <Toast />
+      </View>
+    </ThemeProvider>
   );
 };
 

@@ -18,5 +18,6 @@
   "yourLocation": "You are here",
   "locationPermissionDenied": "Location access permission denied",
   "darkMode": "Dark Mode",
-  "total": "Total"
+  "total": "Total",
+  "currentLocation": "Current Location"
 }

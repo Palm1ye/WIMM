@@ -18,5 +18,6 @@
     "yourLocation": "Buradasınız",
     "locationPermissionDenied": "Konum erişimi izni reddedildi",
     "darkMode": "Karanlık Mod",
-    "total": "Toplam"
+    "total": "Toplam",
+    "currentLocation": "Mevcut Konum"
   }
