@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "WIMM",
-    "slug": "WIMM",
+    "slug": "wimm",
     "scheme": "where is my money",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -25,6 +25,13 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-    ]
+      "expo-router"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a7ce3c95-a617-4586-9618-de64582f32bf"
+      }
+    },
+    "owner": "palmiye"
   }
 }
