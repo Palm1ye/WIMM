@@ -1,4 +1,4 @@
-package com.anonymous.WIMM
+package com.palmiye.wimm
 
 import android.os.Build
 import android.os.Bundle

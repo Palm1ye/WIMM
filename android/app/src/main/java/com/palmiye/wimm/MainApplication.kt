@@ -1,4 +1,4 @@
-package com.anonymous.WIMM
+package com.palmiye.wimm
 
 import android.app.Application
 import android.content.res.Configuration

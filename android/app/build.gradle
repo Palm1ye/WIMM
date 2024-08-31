@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.WIMM'
+    namespace 'com.palmiye.wimm'
     defaultConfig {
-        applicationId 'com.anonymous.WIMM'
+        applicationId 'com.palmiye.wimm'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
