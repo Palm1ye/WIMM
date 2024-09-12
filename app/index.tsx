@@ -300,45 +300,68 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#f7f7f7', // Light gray for light mode
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    fontSize: 26,
+    fontWeight: '600',
+    marginBottom: 24,
+    fontFamily: 'Poppins-SemiBold', // Modern font
   },
   input: {
     borderWidth: 1,
-    borderRadius: 4,
-    padding: 8,
-    marginBottom: 8,
+    borderColor: '#ddd',
+    borderRadius: 10, // more rounded corners
+    padding: 12, // more padding
+    marginBottom: 12,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2, // shadow effect
   },
   button: {
     padding: 16,
-    borderRadius: 4,
+    borderRadius: 10,
     alignItems: 'center',
+    backgroundColor: '#6200ee', // Modern purple tone
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'white',
   },
   expenseItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8,
-    borderBottomWidth: 1,
+    padding: 12,
+    marginBottom: 8,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
   },
   expenseText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontFamily: 'Roboto-Regular',
+    color: 'black',
   },
   map: {
-    height: 200,
+    height: 250,
+    borderRadius: 10,
+    overflow: 'hidden', // Make corners rounded (looks better)
     marginTop: 16,
   },
   total: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 16,
+    fontSize: 22,
+    fontWeight: '700',
+    marginTop: 24,
+    fontFamily: 'Poppins-Bold',
   },
   settingsButton: {
     position: 'absolute',
@@ -352,34 +375,40 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: 300,
-    padding: 16,
+    width: 320,
+    padding: 24,
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 5,
   },
   currencyOption: {
-    fontSize: 18,
-    padding: 8,
+    fontSize: 20,
+    padding: 12,
   },
   languageOption: {
-    fontSize: 18,
-    padding: 8,
+    fontSize: 20,
+    padding: 12,
   },
   darkModeToggle: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
+    padding: 12,
   },
   darkModeText: {
     fontSize: 18,
-    marginRight: 8,
+    marginRight: 12,
   },
   closeText: {
     fontSize: 18,
-    padding: 8,
-    color: 'blue',
+    padding: 12,
+    color: '#6200ee', // Modern purple tone
   },
 });
+
 
 export default App;
