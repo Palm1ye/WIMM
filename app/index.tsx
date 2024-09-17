@@ -11,6 +11,7 @@ import { DefaultTheme, DarkTheme, ThemeProvider, useTheme } from '@react-navigat
 import Toast from 'react-native-toast-message';
 import * as Haptics from 'expo-haptics';
 
+
 // Import translations
 import en from '../locales/en.json';
 import tr from '../locales/tr.json';
@@ -119,36 +120,36 @@ const App = () => {
     console.log(currentPosition.coords);
   }, 300);  // its logging the current position every 300ms (for checking nearby places)
 
-  const checkNearbyPlaces = (location: Location.LocationObject) => {
-    const places = [
-      { id: 1, name: 'Restaurant A', latitude: 37.7749, longitude: -122.4194 },
-      { id: 2, name: 'Cafe B', latitude: 37.7750, longitude: -122.4184 },
-    ];
 
-    places.forEach(place => {
-      const distance = getDistance(location.coords, { latitude: place.latitude, longitude: place.longitude });
-      if (distance < 100) {
-        sendNotification(place.name);
+  const places = require('./places.json');
+  
+
+  const checkNearbyPlaces = (location: Location.LocationObject) => {
+    places.forEach((place: { latitude: number; longitude: number; name: any; }) => {
+      const distance = getDistanceFromLatLonInKm(location.coords.latitude, location.coords.longitude, place.latitude, place.longitude);
+      
+      if (distance < 0.5) { // check 500 meters around
+        console.log(`You are near ${place.name}, how much did you spend?`);
       }
     });
   };
-
-  const getDistance = (coords1: Location.LocationObjectCoords, coords2: { latitude: number; longitude: number }) => {
-    const toRad = (value: number) => (value * Math.PI) / 180;
-
-    const lat1 = coords1.latitude;
-    const lon1 = coords1.longitude;
-    const lat2 = coords2.latitude;
-    const lon2 = coords2.longitude;
-
-    const R = 6371; // km
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a =
+  
+  // Distance calculation formula (Haversine Formula):
+  const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // Radius of Earth (km)
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a = 
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c * 1000; // meters
+    const distance = R * c; // Distance in km
+    return distance;
+  };
+  
+  const deg2rad = (deg: number) => {
+    return deg * (Math.PI / 180);
   };
 
   const sendNotification = async (placeName: string) => {
