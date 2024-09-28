@@ -121,7 +121,7 @@ const App = () => {
   }, 300);  // its logging the current position every 300ms (for checking nearby places)
 
 
-  const places = require('./places.json');
+  const places = require('../places/places.json');
   
 
   const checkNearbyPlaces = (location: Location.LocationObject) => {
@@ -152,16 +152,7 @@ const App = () => {
     return deg * (Math.PI / 180);
   };
 
-  const sendNotification = async (placeName: string) => {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: t('locationNotificationTitle'),
-        body: t('locationNotificationBody', { placeName }),
-      },
-      trigger: null,
-    });
-
-    // In app notification test
+  const showToast = (placeName: string) => {
     Toast.show({
       type: 'success',
       text1: t('locationNotificationTitle'),
@@ -169,9 +160,15 @@ const App = () => {
       position: 'top', // or 'bottom'
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);  // For the vibration
+  
+    // In app notification test
+    showToast(placeName);
   };
-
-
+<View style={styles.toast}>
+  <TouchableOpacity onPress={() => showToast('Test Place')}>
+    <Text>Test Notification</Text>
+  </TouchableOpacity>
+</View>
 
   
 
@@ -291,7 +288,6 @@ const App = () => {
           </MapView>
         )}
         {renderSettingsMenu()}
-        <Toast />
       </View>
     </ThemeProvider>
   );
@@ -359,6 +355,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   total: {
+    flex: 0.18,
     fontSize: 22,
     fontWeight: '700',
     marginTop: 24,
@@ -408,6 +405,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 12,
     color: '#6200ee', // Modern purple tone
+  },
+  toast: {
+    position: 'static',
+    top: 16,
+    right: 16,
+    flexDirection: 'column',
   },
 });
 
